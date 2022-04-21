@@ -4,7 +4,7 @@ var jwt = require("jwt-simple");
 var moment = require("moment");
 var secret = "aranibar";
 
-exports.auth = (req, res, next) => {
+const validateJWT = (req, res, next) => {
   if (!req.headers.token) {
     return res.status(403).send({ msg: "No se proveeron token" });
   }
@@ -27,3 +27,5 @@ exports.auth = (req, res, next) => {
   req.user = payload;
   next();
 };
+
+module.exports = { validateJWT };
