@@ -9,6 +9,7 @@ var cors = require('cors');
 
 var customer_route = require("./routes/customer");
 var admin_route = require("./routes/admin");
+var product_route = require("./routes/product");
 
 mongoose.connect("mongodb://127.0.0.1:27017/tienda", (err, res) => {
   if (err) {
@@ -26,5 +27,6 @@ app.use(cors());
 
 app.use("/api", customer_route);
 app.use("/api", admin_route);
+app.use("/api", product_route);
 
 module.exports = app;
