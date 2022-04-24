@@ -1,45 +1,9 @@
 "use strict";
 const { response } = require("express");
 var Product = require("../models/product");
-var fs = require("fs");
+var Inventory = require("../models/inventory");
 var path = require("path");
-
-const list_products = async (req, res = response) => {
-  if (req.user) {
-    if (req.user.role === "admin") {
-      let filter = req.params["filter"];
-      let reg = await Product.find({ title: new RegExp(filter, "i") });
-      res.status(200).send({ data: reg });
-    } else {
-      res.status(500).send({ msg: "No access" });
-    }
-  } else {
-    res.status(500).send({ msg: "No access" });
-  }
-};
-
-const register_product = async (req, res = response) => {
-  if (req.user) {
-    if (req.user.role === "admin") {
-      let data = req.body;
-      var img_path = req.files.banner.path;
-      var name = img_path.split("\\");
-      var banner_name = name[2];
-      data.slug = data.title
-        .toLowerCase()
-        .replace(/ /g, "-")
-        .replace(/[^\w-]+/g, "");
-      data.banner = banner_name;
-
-      let reg = await Product.create(data);
-      res.status(200).send({ data: reg });
-    } else {
-      res.status(500).send({ msg: "No access" });
-    }
-  } else {
-    res.status(500).send({ msg: "No access" });
-  }
-};
+var fs = require("fs");
 
 const get_banner = async (req, res = response) => {
   var img = req.params["img"];
@@ -54,4 +18,104 @@ const get_banner = async (req, res = response) => {
   });
 };
 
-module.exports = { list_products, register_product, get_banner };
+const list_products = async (req, res = response) => {
+  let filter = req.params["filter"];
+  let reg = await Product.find({ title: new RegExp(filter, "i") });
+  res.status(200).send({ data: reg });
+};
+
+const list_product_by_id = async (req, res = response) => {
+  let id = req.params["id"];
+  try {
+    var reg = await Product.findById(id);
+    res.status(200).send({ data: reg });
+  } catch (error) {
+    res.status(200).send({ data: undefined });
+  }
+};
+
+const register_product = async (req, res = response) => {
+  let data = req.body;
+  var img_path = req.files.banner.path;
+  var name = img_path.split("\\");
+  var banner_name = name[2];
+  data.slug = data.title
+    .toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "");
+  data.banner = banner_name;
+
+  let reg = await Product.create(data);
+  let inventory = await Inventory.create({
+    admin: req.user.sub,
+    quantity: data.stock,
+    supplier: "Primer Registro",
+    product: reg._id,
+  });
+
+  res.status(200).send({ data: reg, inventory });
+};
+
+const update_product = async (req, res = response) => {
+  let id = req.params["id"];
+  let { ...data } = req.body;
+
+  if (req.files) {
+    var img_path = req.files.banner.path;
+    var name = img_path.split("\\");
+    var banner_name = name[2];
+
+    let reg = await Product.findByIdAndUpdate(id, { ...data, banner: banner_name });
+
+    fs.stat("./uploads/products/" + reg.banner, (err) => {
+      if (!err) {
+        fs.unlink("./uploads/products/" + reg.banner, (err) => {
+          if (err) throw err;
+        });
+      }
+    });
+    res.status(200).send({ data: reg });
+  } else {
+    let reg = await Product.findByIdAndUpdate(id, data, { new: true });
+    res.status(200).send({ data: reg });
+  }
+};
+
+const delete_product = async (req, res = response) => {
+  var id = req.params.id;
+  var reg = await Product.findByIdAndDelete({ _id: id });
+  res.status(200).send({ data: reg });
+};
+
+const list_inventory_product = async (req, res = response) => {
+  var id = req.params["id"];
+  var reg = await Inventory.find({ product: id }).populate("admin");
+  res.status(200).send({ data: reg });
+};
+
+const delete_inventory_product = async (req, res = response) => {
+  // Eliminar Inventario mediante su ID
+  var id = req.params["id"];
+  let reg = await Inventory.findOneAndRemove(id);
+
+  // Obtener registro del Producto
+  let prod = await Product.findById({ _id: reg.product });
+
+  // Calcular el nuevo stock
+  let new_stock = parseInt(prod.stock) - parseInt(reg.quantity);
+
+  // Actualización del nuevo stock del Producto
+  let product = await Product.findOneAndUpdate({ _id: reg.product }, { stock: new_stock });
+  res.status(200).send({ data: product });
+};
+
+module.exports = {
+  list_products,
+  list_product_by_id,
+  register_product,
+  get_banner,
+  update_product,
+  delete_product,
+  list_inventory_product,
+  delete_inventory_product,
+};
