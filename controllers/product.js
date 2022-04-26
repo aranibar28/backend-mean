@@ -1,7 +1,7 @@
 "use strict";
 const { response } = require("express");
-var Product = require("../models/product");
-var Inventory = require("../models/inventory");
+const Product = require("../models/product");
+const Inventory = require("../models/inventory");
 var path = require("path");
 var fs = require("fs");
 
@@ -39,6 +39,7 @@ const register_product = async (req, res = response) => {
   var img_path = req.files.banner.path;
   var name = img_path.split("\\");
   var banner_name = name[2];
+
   data.slug = data.title
     .toLowerCase()
     .replace(/ /g, "-")
@@ -83,13 +84,13 @@ const update_product = async (req, res = response) => {
 
 const delete_product = async (req, res = response) => {
   var id = req.params.id;
-  var reg = await Product.findByIdAndDelete({ _id: id });
+  var reg = await Product.findByIdAndDelete(id);
   res.status(200).send({ data: reg });
 };
 
 const list_inventory_product = async (req, res = response) => {
   var id = req.params["id"];
-  var reg = await Inventory.find({ product: id }).populate("admin");
+  var reg = await Inventory.find({ product: id }).populate("admin").sort({ create_at: -1 });
   res.status(200).send({ data: reg });
 };
 
@@ -109,6 +110,22 @@ const delete_inventory_product = async (req, res = response) => {
   res.status(200).send({ data: product });
 };
 
+const register_inventory_product = async (req, res = response) => {
+  let data = req.body;
+  let reg = await Inventory.create(data);
+
+  // Obtener registro del Producto
+  let prod = await Product.findById({ _id: reg.product });
+
+  // Calcular el stock actual + stock aumentado
+  let new_stock = parseInt(prod.stock) + parseInt(reg.quantity);
+
+  // Actualización del nuevo stock del Producto
+  let product = await Product.findOneAndUpdate({ _id: reg.product }, { stock: new_stock });
+
+  res.status(200).send({ data: reg });
+};
+
 module.exports = {
   list_products,
   list_product_by_id,
@@ -118,4 +135,5 @@ module.exports = {
   delete_product,
   list_inventory_product,
   delete_inventory_product,
+  register_inventory_product,
 };
