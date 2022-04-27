@@ -11,6 +11,7 @@ var admin_route = require("./routes/admin");
 var customer_route = require("./routes/customer");
 var product_route = require("./routes/product");
 var coupon_route = require("./routes/coupon");
+var config_route = require("./routes/config");
 
 mongoose.connect("mongodb://127.0.0.1:27017/tienda", (err, res) => {
   if (err) {
@@ -30,5 +31,6 @@ app.use("/api", admin_route);
 app.use("/api", customer_route);
 app.use("/api", product_route);
 app.use("/api", coupon_route);
+app.use("/api", config_route);
 
 module.exports = app;

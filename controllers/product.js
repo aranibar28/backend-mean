@@ -82,6 +82,14 @@ const update_product = async (req, res = response) => {
   }
 };
 
+const update_product_variety = async (req, res = response) => {
+  let id = req.params["id"];
+  let { ...data } = req.body;
+
+  let reg = await Product.findByIdAndUpdate(id, { ...data, name_variety: data.name_variety, item_variety: data.item_variety });
+  res.status(200).send({ data: reg });
+};
+
 const delete_product = async (req, res = response) => {
   var id = req.params.id;
   var reg = await Product.findByIdAndDelete(id);
@@ -132,6 +140,7 @@ module.exports = {
   register_product,
   get_banner,
   update_product,
+  update_product_variety,
   delete_product,
   list_inventory_product,
   delete_inventory_product,

@@ -12,6 +12,7 @@ api.get("/list_products/:filter?", [validateJWT, validateROLE], controllers.list
 api.get("/list_product_by_id/:id", [validateJWT, validateROLE], controllers.list_product_by_id);
 api.post("/register_product", [validateJWT, validateROLE, path], controllers.register_product);
 api.put("/update_product/:id", [validateJWT, validateROLE, path], controllers.update_product);
+api.put("/update_product_variety/:id", [validateJWT, validateROLE, path], controllers.update_product_variety);
 api.delete("/delete_product/:id", [validateJWT, validateROLE, path], controllers.delete_product);
 api.get("/get_banner/:img", controllers.get_banner);
 
