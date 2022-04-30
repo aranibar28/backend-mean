@@ -90,6 +90,39 @@ const update_product_variety = async (req, res = response) => {
   res.status(200).send({ data: reg });
 };
 
+const update_product_galery = async (req, res = response) => {
+  let id = req.params["id"];
+  let data = req.body;
+
+  var img_path = req.files.image.path;
+  var name = img_path.split("\\");
+  var image_name = name[2];
+
+  let reg = await Product.findByIdAndUpdate(id, {
+    $push: {
+      galery: {
+        image: image_name,
+        _id: data._id,
+      },
+    },
+  });
+
+  res.status(200).send({ data: reg });
+};
+
+const delete_product_galery = async (req, res = response) => {
+  let id = req.params["id"];
+  let data = req.body;
+
+  let reg = await Product.findByIdAndUpdate(id, {
+    $pull: {
+      galery: { _id: data._id },
+    },
+  });
+
+  res.status(200).send({ data: reg });
+};
+
 const delete_product = async (req, res = response) => {
   var id = req.params.id;
   var reg = await Product.findByIdAndDelete(id);
@@ -141,6 +174,8 @@ module.exports = {
   get_banner,
   update_product,
   update_product_variety,
+  update_product_galery,
+  delete_product_galery,
   delete_product,
   list_inventory_product,
   delete_inventory_product,
