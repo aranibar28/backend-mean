@@ -10,16 +10,16 @@ const register_admin = async (req, res = response) => {
 
   admin_arr = await Admin.find({ email: data.email });
 
-  if (admin_arr.length === 0) {
+  if (admin_arr.length == 0) {
     if (data.password) {
       data.password = bcrypt.hashSync(data.password, bcrypt.genSaltSync());
       var reg = await Admin.create(data);
       res.status(200).send({ data: reg });
     } else {
-      res.status(400).send({ message: "No hay una contraseña", data: undefined });
+      res.status(400).send({ msg: "No hay una contraseña", data: undefined });
     }
   } else {
-    res.status(400).send({ message: "El correo ya existe en la base de datos", data: undefined });
+    res.status(400).send({ msg: "El correo ya existe en la base de datos", data: undefined });
   }
 };
 

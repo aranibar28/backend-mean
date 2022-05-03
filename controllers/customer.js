@@ -19,7 +19,20 @@ const register_customer = async (req, res = response) => {
       res.status(400).send({ msg: "No hay una contraseña", data: undefined });
     }
   } else {
-    res.status(400).send({ msg: "El correo ya existe en la base de datos", data: undefined });
+    res.status(400).send({ msg: "El correo ya existe en la base de datos.", data: undefined });
+  }
+};
+
+const register_customer_admin = async (req, res = response) => {
+  var data = req.body;
+  var customer_arr = [];
+  customer_arr = await Customer.find({ email: data.email });
+  if (customer_arr.length === 0) {
+    data.password = bcrypt.hashSync("123456", bcrypt.genSaltSync());
+    let reg = await Customer.create(data);
+    res.status(200).send({ data: reg });
+  } else {
+    res.status(400).send({ msg: "El correo ya existe en la base de datos.", data: undefined });
   }
 };
 
@@ -67,13 +80,6 @@ const list_customers = async (req, res = response) => {
       res.status(200).send({ data: reg });
     }
   }
-};
-
-const register_customer_admin = async (req, res = response) => {
-  var data = req.body;
-  data.password = bcrypt.hashSync("123456", bcrypt.genSaltSync());
-  let reg = await Customer.create(data);
-  res.status(200).send({ data: reg });
 };
 
 const list_customer_by_id = async (req, res = response) => {
