@@ -2,64 +2,6 @@
 const { response } = require("express");
 var Customer = require("../models/customer");
 var bcrypt = require("bcryptjs");
-var jwt = require("../helpers/jwt");
-
-const register_customer = async (req, res = response) => {
-  var data = req.body;
-  var customer_arr = [];
-
-  customer_arr = await Customer.find({ email: data.email });
-
-  if (customer_arr.length === 0) {
-    if (data.password) {
-      data.password = bcrypt.hashSync(data.password, bcrypt.genSaltSync());
-      var reg = await Customer.create(data);
-      res.status(200).send({ data: reg });
-    } else {
-      res.status(400).send({ msg: "No hay una contraseña", data: undefined });
-    }
-  } else {
-    res.status(400).send({ msg: "El correo ya existe en la base de datos.", data: undefined });
-  }
-};
-
-const register_customer_admin = async (req, res = response) => {
-  var data = req.body;
-  var customer_arr = [];
-  customer_arr = await Customer.find({ email: data.email });
-  if (customer_arr.length === 0) {
-    data.password = bcrypt.hashSync("123456", bcrypt.genSaltSync());
-    let reg = await Customer.create(data);
-    res.status(200).send({ data: reg });
-  } else {
-    res.status(400).send({ msg: "El correo ya existe en la base de datos.", data: undefined });
-  }
-};
-
-const login_customer = async (req, res = response) => {
-  const { email, password } = req.body;
-
-  try {
-    // Verificar Email
-    const customer = await Customer.findOne({ email });
-    if (!customer) {
-      return res.status(404).send({ msg: "Email no encontrado" });
-    }
-
-    // Verificar Password
-    const validPassword = bcrypt.compareSync(password, customer.password);
-    if (!validPassword) {
-      return res.status(404).send({ msg: "Password no válido" });
-    }
-
-    // Generar Token
-    const token = jwt.createToken(user);
-
-    res.send({ data: customer, token });
-  } catch (error) {
-    res.status(500).send({ ok: false, msg: "Error inesperado... resvisar logs!" });
-  }
-};
 
 const list_customers = async (req, res = response) => {
   let type = req.params["type"];
@@ -79,6 +21,19 @@ const list_customers = async (req, res = response) => {
       let reg = await Customer.find({ email: new RegExp(filter, "i") });
       res.status(200).send({ data: reg });
     }
+  }
+};
+
+const register_customer_admin = async (req, res = response) => {
+  var data = req.body;
+  var customer_arr = [];
+  customer_arr = await Customer.find({ email: data.email });
+  if (customer_arr.length === 0) {
+    data.password = bcrypt.hashSync("123456", bcrypt.genSaltSync());
+    let reg = await Customer.create(data);
+    res.status(200).send({ data: reg });
+  } else {
+    res.status(400).send({ msg: "El correo ya existe en la base de datos.", data: undefined });
   }
 };
 
@@ -132,11 +87,9 @@ const delete_customer_admin = async (req, res = response) => {
 };
 
 module.exports = {
-  register_customer,
-  login_customer,
   list_customers,
-  register_customer_admin,
   list_customer_by_id,
+  register_customer_admin,
   update_customer_admin,
   delete_customer_admin,
 };

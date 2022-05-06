@@ -37,7 +37,6 @@ const update_config_admin = async (req, res = response) => {
   let { ...data } = req.body;
 
   if (req.files) {
-    console.log("SI HAY IMAGEN");
     var img_path = req.files.logo.path;
     var name = img_path.split("\\");
     var logo_name = name[2];
@@ -52,7 +51,6 @@ const update_config_admin = async (req, res = response) => {
     });
     res.status(200).send({ data: reg });
   } else {
-    console.log("NO HAY IMAGEN");
     let reg = await Config.findByIdAndUpdate(id, data);
     res.status(200).send({ data: reg });
   }

@@ -25,4 +25,7 @@ api.get("/list_inventory_product/:id", [validateJWT, validateROLE], controllers.
 api.post("/register_inventory_product", [validateJWT, validateROLE], controllers.register_inventory_product);
 api.delete("/delete_inventory_product/:id", [validateJWT, validateROLE], controllers.delete_inventory_product);
 
+// Public whitout middlewares
+api.get("/list_products_public/:filter?", controllers.list_products);
+
 module.exports = api;

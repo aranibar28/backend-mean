@@ -9,9 +9,9 @@ var CustomerSchema = Schema({
   password:   { type: String, required: true },
   profile:    { type: String, required: true, default: "profile.png" },
   birthday:   { type: String, required: false },
-  country:    { type: String, required: false },
+  country:    { type: String, required: false, default:"" },
   phone:      { type: String, required: false },
-  gender:     { type: String, required: false },
+  gender:     { type: String, required: false, default:"" },
   dni:        { type: String, required: false },
   create_at:   { type: Date, default: Date.now, required: true },
 });

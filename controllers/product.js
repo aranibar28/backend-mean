@@ -138,7 +138,7 @@ const list_inventory_product = async (req, res = response) => {
 const delete_inventory_product = async (req, res = response) => {
   // Eliminar Inventario mediante su ID
   var id = req.params["id"];
-  let reg = await Inventory.findOneAndRemove(id);
+  let reg = await Inventory.findOneAndRemove({ _id: id });
 
   // Obtener registro del Producto
   let prod = await Product.findById({ _id: reg.product });
