@@ -16,4 +16,9 @@ api.post("/login_customer", invited.login_customer);
 api.post("/register_customer", invited.register_customer);
 api.put("/update_customer_invited/:id", [validateJWT], invited.update_customer_invited);
 api.get("/list_customer_by_id_invited/:id", [validateJWT], invited.list_customer_by_id_invited);
+
+api.post("/register_address_customer", [validateJWT], invited.register_address_customer);
+api.get("/list_address_customer/:id", [validateJWT], invited.list_address_customer);
+api.put("/change_address_customer/:id/:customer", [validateJWT], invited.change_address_customer);
+api.delete("/delete_address_customer/:id", [validateJWT], invited.delete_address_customer);
 module.exports = api;

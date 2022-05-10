@@ -1,6 +1,7 @@
 "use strict";
 const { response } = require("express");
 var Customer = require("../models/customer");
+var Address = require("../models/address");
 var bcrypt = require("bcryptjs");
 var jwt = require("../helpers/jwt");
 
@@ -79,9 +80,63 @@ const list_customer_by_id_invited = async (req, res = response) => {
   }
 };
 
+const register_address_customer = async (req, res = response) => {
+  var data = req.body;
+  try {
+    if (data.principal) {
+      let address = await Address.find({ customer: data.customer });
+      address.forEach(async (element) => {
+        await Address.findByIdAndUpdate({ _id: element._id }, { principal: false });
+      });
+    }
+    let reg = await Address.create(data);
+    res.status(200).send({ data: reg });
+  } catch (error) {
+    res.status(400).send({ data: undefined });
+  }
+};
+
+const list_address_customer = async (req, res = response) => {
+  var id = req.params["id"];
+  try {
+    let address = await Address.find({ customer: id }).populate("customer").sort({ create_at: -1 });
+    res.status(200).send({ data: address });
+  } catch (error) {
+    res.status(200).send({ data: undefined });
+  }
+};
+
+const change_address_customer = async (req, res = response) => {
+  var id = req.params["id"];
+  var customer = req.params["customer"];
+  try {
+    let address = await Address.find({ customer: customer });
+
+    address.forEach(async (element) => {
+      await Address.findByIdAndUpdate({ _id: element._id }, { principal: false });
+    });
+
+    await Address.findByIdAndUpdate({ _id: id }, { principal: true });
+
+    res.status(200).send({ data: true });
+  } catch (error) {
+    res.status(400).send({ data: undefined });
+  }
+};
+
+const delete_address_customer = async (req, res = response) => {
+  var id = req.params["id"];
+  var address = await Address.findByIdAndDelete({ _id: id });
+  res.status(200).send({ data: address });
+};
+
 module.exports = {
   login_customer,
   register_customer,
   update_customer_invited,
   list_customer_by_id_invited,
+  register_address_customer,
+  list_address_customer,
+  change_address_customer,
+  delete_address_customer,
 };

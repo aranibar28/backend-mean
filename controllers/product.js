@@ -20,7 +20,7 @@ const get_banner = async (req, res = response) => {
 
 const list_products = async (req, res = response) => {
   let filter = req.params["filter"];
-  let reg = await Product.find({ title: new RegExp(filter, "i") });
+  let reg = await Product.find({ title: new RegExp(filter, "i") }).sort({ create_at: -1 });
   res.status(200).send({ data: reg });
 };
 
@@ -28,6 +28,26 @@ const list_product_by_id = async (req, res = response) => {
   let id = req.params["id"];
   try {
     var reg = await Product.findById(id);
+    res.status(200).send({ data: reg });
+  } catch (error) {
+    res.status(200).send({ data: undefined });
+  }
+};
+
+const list_product_by_slug = async (req, res = response) => {
+  let slug = req.params["slug"];
+  try {
+    var reg = await Product.findOne({ slug });
+    res.status(200).send({ data: reg });
+  } catch (error) {
+    res.status(200).send({ data: undefined });
+  }
+};
+
+const list_product_recomended = async (req, res = response) => {
+  let category = req.params["category"];
+  try {
+    var reg = await Product.find({ category }).sort({ create_at: -1 }).limit(9);
     res.status(200).send({ data: reg });
   } catch (error) {
     res.status(200).send({ data: undefined });
@@ -170,6 +190,8 @@ const register_inventory_product = async (req, res = response) => {
 module.exports = {
   list_products,
   list_product_by_id,
+  list_product_by_slug,
+  list_product_recomended,
   register_product,
   get_banner,
   update_product,
