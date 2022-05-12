@@ -27,6 +27,7 @@ var product_route = require("./routes/product");
 var coupon_route = require("./routes/coupon");
 var config_route = require("./routes/config");
 var cart_route = require("./routes/cart");
+var sale_route = require("./routes/sale");
 
 mongoose.connect("mongodb://127.0.0.1:27017/tienda", (err, res) => {
   if (err) {
@@ -48,5 +49,6 @@ app.use("/api", product_route);
 app.use("/api", coupon_route);
 app.use("/api", config_route);
 app.use("/api", cart_route);
+app.use("/api", sale_route);
 
 module.exports = app;

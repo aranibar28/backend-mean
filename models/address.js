@@ -17,4 +17,4 @@ var Address = Schema({
   create_at: { type: Date, default: Date.now, required: true },
 });
 
-module.exports = mongoose.model("adress", Address);
+module.exports = mongoose.model("address", Address);

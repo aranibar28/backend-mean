@@ -1,6 +1,6 @@
 "use strict";
 var express = require("express");
-var { validateJWT, validateROLE } = require("../middlewares/authenticated");
+var { validateJWT } = require("../middlewares/authenticated");
 var controllers = require("../controllers/cart");
 
 var api = express.Router();

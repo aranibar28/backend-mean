@@ -21,4 +21,5 @@ api.post("/register_address_customer", [validateJWT], invited.register_address_c
 api.get("/list_address_customer/:id", [validateJWT], invited.list_address_customer);
 api.put("/change_address_customer/:id/:customer", [validateJWT], invited.change_address_customer);
 api.delete("/delete_address_customer/:id", [validateJWT], invited.delete_address_customer);
+api.get("/principal_address_customer/:id", [validateJWT], invited.principal_address_customer);
 module.exports = api;

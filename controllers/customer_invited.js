@@ -130,6 +130,21 @@ const delete_address_customer = async (req, res = response) => {
   res.status(200).send({ data: address });
 };
 
+const principal_address_customer = async (req, res = response) => {
+  var id = req.params["id"];
+  var address = undefined;
+  try {
+    address = await Address.findOne({ customer: id, principal: true });
+    if (address == undefined) {
+      res.status(200).send({ data: undefined });
+    } else {
+      res.status(200).send({ data: address });
+    }
+  } catch (error) {
+    res.status(400).send({ data: undefined });
+  }
+};
+
 module.exports = {
   login_customer,
   register_customer,
@@ -139,4 +154,5 @@ module.exports = {
   list_address_customer,
   change_address_customer,
   delete_address_customer,
+  principal_address_customer,
 };
