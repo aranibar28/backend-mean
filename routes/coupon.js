@@ -11,4 +11,5 @@ api.post("/register_coupon", [validateJWT, validateROLE], controllers.register_c
 api.put("/update_coupon/:id", [validateJWT, validateROLE], controllers.update_coupon);
 api.delete("/delete_coupon/:id", [validateJWT, validateROLE], controllers.delete_coupon);
 
+api.get("/validate_coupon_public/:coupon", [validateJWT], controllers.validate_coupon_public);
 module.exports = api;
