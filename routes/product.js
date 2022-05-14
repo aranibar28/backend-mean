@@ -29,5 +29,7 @@ api.delete("/delete_inventory_product/:id", [validateJWT, validateROLE], control
 api.get("/list_products_public/:filter?", controllers.list_products);
 api.get("/list_product_by_slug/:slug", controllers.list_product_by_slug);
 api.get("/list_product_recomended/:category", controllers.list_product_recomended);
+api.get("/list_product_news", controllers.list_product_news);
+api.get("/list_product_sales", controllers.list_product_sales);
 
 module.exports = api;

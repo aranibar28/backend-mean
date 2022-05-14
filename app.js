@@ -24,6 +24,7 @@ io.on("connection", (socket) => {
 var admin_route = require("./routes/admin");
 var customer_route = require("./routes/customer");
 var product_route = require("./routes/product");
+var category_route = require("./routes/category");
 var coupon_route = require("./routes/coupon");
 var config_route = require("./routes/config");
 var cart_route = require("./routes/cart");
@@ -47,6 +48,7 @@ app.use(cors());
 app.use("/api", admin_route);
 app.use("/api", customer_route);
 app.use("/api", product_route);
+app.use("/api", category_route);
 app.use("/api", coupon_route);
 app.use("/api", config_route);
 app.use("/api", cart_route);

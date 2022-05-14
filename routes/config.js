@@ -12,6 +12,4 @@ api.get("/get_config_admin", [validateJWT, validateROLE], controllers.get_config
 api.post("/create_config_admin", [validateJWT, validateROLE], controllers.create_config_admin);
 api.put("/update_config_admin/:id", [validateJWT, validateROLE, path], controllers.update_config_admin);
 
-api.get("/get_config_public", controllers.get_config_public);
-
 module.exports = api;

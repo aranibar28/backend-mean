@@ -54,6 +54,24 @@ const list_product_recomended = async (req, res = response) => {
   }
 };
 
+const list_product_news = async (req, res = response) => {
+  try {
+    var reg = await Product.find().sort({ create_at: -1 }).limit(9);
+    res.status(200).send({ data: reg });
+  } catch (error) {
+    res.status(200).send({ data: undefined });
+  }
+};
+
+const list_product_sales = async (req, res = response) => {
+  try {
+    var reg = await Product.find().sort({ num_sales: -1 }).limit(9);
+    res.status(200).send({ data: reg });
+  } catch (error) {
+    res.status(200).send({ data: undefined });
+  }
+};
+
 const register_product = async (req, res = response) => {
   let data = req.body;
   var img_path = req.files.banner.path;
@@ -192,6 +210,8 @@ module.exports = {
   list_product_by_id,
   list_product_by_slug,
   list_product_recomended,
+  list_product_news,
+  list_product_sales,
   register_product,
   get_banner,
   update_product,

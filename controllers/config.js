@@ -1,6 +1,7 @@
 "use strict";
 const { response } = require("express");
 const Config = require("../models/config");
+const Category = require("../models/category");
 var path = require("path");
 var fs = require("fs");
 var id = "6268375bfcf3993fb92859a3";
@@ -56,15 +57,9 @@ const update_config_admin = async (req, res = response) => {
   }
 };
 
-const get_config_public = async (req, res = response) => {
-  let reg = await Config.findById(id);
-  res.status(200).send({ data: reg });
-};
-
 module.exports = {
   create_config_admin,
   update_config_admin,
   get_config_admin,
-  get_config_public,
   get_logo,
 };
