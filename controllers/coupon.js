@@ -56,7 +56,6 @@ const delete_coupon = async (req, res = response) => {
 const validate_coupon_public = async (req, res = response) => {
   let coupon = req.params["coupon"];
   let data = await Coupon.findOne({ code: coupon });
-
   if (data) {
     if (data.limit == 0) {
       res.status(200).send({ data: undefined });

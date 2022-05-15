@@ -28,14 +28,14 @@ const create_category_admin = async (req, res = response) => {
   res.status(200).send({ data: reg });
 };
 
-const read_category_public = async (req, res = response) => {
-  let reg = await Category.find();
-  res.status(200).send({ data: reg });
-};
-
 const read_category_admin = async (req, res = response) => {
   let filter = req.params["filter"];
   let reg = await Category.find({ title: new RegExp(filter, "i") });
+  res.status(200).send({ data: reg });
+};
+
+const read_category_public = async (req, res = response) => {
+  let reg = await Category.find();
   res.status(200).send({ data: reg });
 };
 
@@ -75,7 +75,6 @@ const update_category_admin = async (req, res = response) => {
 const delete_category_admin = async (req, res = response) => {
   let id = req.params["id"];
   let reg = await Category.findByIdAndDelete(id);
-
   fs.stat("./uploads/categories/" + reg.banner, (err) => {
     if (!err) {
       fs.unlink("./uploads/categories/" + reg.banner, (err) => {

@@ -2,6 +2,7 @@
 const { response } = require("express");
 var Customer = require("../models/customer");
 var Address = require("../models/address");
+var Contact = require("../models/contact");
 var bcrypt = require("bcryptjs");
 var jwt = require("../helpers/jwt");
 
@@ -58,12 +59,8 @@ const update_customer_invited = async (req, res = response) => {
   if (customer.password != password) {
     var new_password = bcrypt.hashSync(password, bcrypt.genSaltSync());
     data.password = new_password;
-    console.log("CON CONTRASEÑA");
-    console.log(new_password);
   } else {
     data.password = password;
-    console.log("SIN CONTRASEÑA");
-    console.log(password);
   }
 
   const updateCustomer = await Customer.findByIdAndUpdate(id, data, { new: true });
@@ -145,6 +142,12 @@ const principal_address_customer = async (req, res = response) => {
   }
 };
 
+const send_message_contact = async (req, res = response) => {
+  let data = req.body;
+  let reg = await Contact.create(data);
+  res.status(200).send({ data: reg });
+};
+
 module.exports = {
   login_customer,
   register_customer,
@@ -155,4 +158,5 @@ module.exports = {
   change_address_customer,
   delete_address_customer,
   principal_address_customer,
+  send_message_contact,
 };

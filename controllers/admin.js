@@ -1,6 +1,7 @@
 "use strict";
 const { response } = require("express");
 var Admin = require("../models/admin");
+var Contact = require("../models/contact");
 var bcrypt = require("bcryptjs");
 var jwt = require("../helpers/jwt");
 
@@ -30,7 +31,7 @@ const login_admin = async (req, res = response) => {
     // Verificar Email
     const user = await Admin.findOne({ email });
     if (!user) {
-      return res.status(404).send({ msg: "Email no encontrado", data: undefined});
+      return res.status(404).send({ msg: "Email no encontrado", data: undefined });
     }
 
     // Verificar Password
@@ -48,4 +49,20 @@ const login_admin = async (req, res = response) => {
   }
 };
 
-module.exports = { register_admin, login_admin };
+const get_messages_admin = async (req, res = response) => {
+  let reg = await Contact.find().sort({ create_at: -1 });
+  res.status(200).send({ data: reg });
+};
+
+const close_message_admin = async (req, res = response) => {
+  let id = req.params["id"];
+  let reg = await Contact.findByIdAndUpdate({ _id: id }, { status: "Cerrado" });
+  res.status(200).send({ data: reg });
+};
+
+module.exports = {
+  login_admin,
+  register_admin,
+  get_messages_admin,
+  close_message_admin,
+};

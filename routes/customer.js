@@ -2,7 +2,7 @@
 var express = require("express");
 var { validateJWT, validateROLE } = require("../middlewares/authenticated");
 var admin = require("../controllers/customer_admin");
-var invited = require("../controllers/customer_invited");
+var invited = require("../controllers/customer_public");
 
 var api = express.Router();
 
@@ -22,4 +22,6 @@ api.get("/list_address_customer/:id", [validateJWT], invited.list_address_custom
 api.put("/change_address_customer/:id/:customer", [validateJWT], invited.change_address_customer);
 api.delete("/delete_address_customer/:id", [validateJWT], invited.delete_address_customer);
 api.get("/principal_address_customer/:id", [validateJWT], invited.principal_address_customer);
+api.post("/send_message_contact", invited.send_message_contact);
+
 module.exports = api;
