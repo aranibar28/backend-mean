@@ -31,5 +31,6 @@ api.get("/list_product_by_slug/:slug", controllers.list_product_by_slug);
 api.get("/list_product_recomended/:category", controllers.list_product_recomended);
 api.get("/list_product_news", controllers.list_product_news);
 api.get("/list_product_sales", controllers.list_product_sales);
+api.get("/list_reviews_public/:id", controllers.list_reviews_public);
 
 module.exports = api;

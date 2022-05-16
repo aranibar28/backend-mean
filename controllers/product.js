@@ -2,6 +2,7 @@
 const { response } = require("express");
 const Product = require("../models/product");
 const Inventory = require("../models/inventory");
+const Reviews = require("../models/review");
 var path = require("path");
 var fs = require("fs");
 
@@ -70,6 +71,12 @@ const list_product_sales = async (req, res = response) => {
   } catch (error) {
     res.status(200).send({ data: undefined });
   }
+};
+
+const list_reviews_public = async (req, res = response) => {
+  let id = req.params["id"];
+  let reviews = await Reviews.find({ product: id }).sort({ create_at: -1 }).populate("customer");
+  res.status(200).send({ data: reviews });
 };
 
 const register_product = async (req, res = response) => {
@@ -199,10 +206,10 @@ const register_inventory_product = async (req, res = response) => {
   // Calcular el stock actual + stock aumentado
   let new_stock = parseInt(prod.stock) + parseInt(reg.quantity);
 
-  // Actualización del nuevo stock del Producto
+  // TODO: Actualización del nuevo stock del Producto
   let product = await Product.findOneAndUpdate({ _id: reg.product }, { stock: new_stock });
 
-  res.status(200).send({ data: reg });
+  res.status(200).send({ data: product });
 };
 
 module.exports = {
@@ -212,6 +219,7 @@ module.exports = {
   list_product_recomended,
   list_product_news,
   list_product_sales,
+  list_reviews_public,
   register_product,
   get_banner,
   update_product,

@@ -1,8 +1,11 @@
 "use strict";
 const { response } = require("express");
 var Customer = require("../models/customer");
+var Sale = require("../models/sale");
+var DetailSale = require("../models/sale_detail");
 var Address = require("../models/address");
 var Contact = require("../models/contact");
+var Review = require("../models/review");
 var bcrypt = require("bcryptjs");
 var jwt = require("../helpers/jwt");
 
@@ -142,9 +145,48 @@ const principal_address_customer = async (req, res = response) => {
   }
 };
 
+const read_orders_customer = async (req, res = response) => {
+  var id = req.params["id"];
+  let reg = await Sale.find({ customer: id }).sort({ create_at: -1 });
+  if (reg.length >= 1) {
+    res.status(200).send({ data: reg });
+  } else {
+    res.status(200).send({ data: undefined });
+  }
+};
+
+const read_orders_by_id = async (req, res = response) => {
+  var id = req.params["id"];
+  try {
+    let sale = await Sale.findById({ _id: id }).populate("address");
+    let details = await DetailSale.find({ sale: id }).populate("product");
+    res.status(200).send({ data: sale, details: details });
+  } catch (error) {
+    res.status(200).send({ data: undefined });
+  }
+};
+
 const send_message_contact = async (req, res = response) => {
   let data = req.body;
   let reg = await Contact.create(data);
+  res.status(200).send({ data: reg });
+};
+
+const send_review_product = async (req, res = response) => {
+  let data = req.body;
+  let reg = await Review.create(data);
+  res.status(200).send({ data: reg });
+};
+
+const read_review_product = async (req, res = response) => {
+  let id = req.params["id"];
+  let reg = await Review.find({ product: id }).sort({ create_at: -1 });
+  res.status(200).send({ data: reg });
+};
+
+const read_review_customer = async (req, res = response) => {
+  let id = req.params["id"];
+  let reg = await Review.find({ customer: id }).sort({ create_at: -1 }).populate("customer");
   res.status(200).send({ data: reg });
 };
 
@@ -159,4 +201,9 @@ module.exports = {
   delete_address_customer,
   principal_address_customer,
   send_message_contact,
+  read_orders_customer,
+  read_orders_by_id,
+  send_review_product,
+  read_review_product,
+  read_review_customer,
 };

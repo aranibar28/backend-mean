@@ -24,4 +24,11 @@ api.delete("/delete_address_customer/:id", [validateJWT], invited.delete_address
 api.get("/principal_address_customer/:id", [validateJWT], invited.principal_address_customer);
 api.post("/send_message_contact", invited.send_message_contact);
 
+api.get("/read_orders_customer/:id", [validateJWT], invited.read_orders_customer);
+api.get("/read_orders_by_id/:id", [validateJWT], invited.read_orders_by_id);
+
+api.post("/send_review_product", [validateJWT], invited.send_review_product);
+api.get("/read_review_customer/:id", [validateJWT], invited.read_review_customer);
+api.get("/read_review_product/:id", invited.read_review_product);
+
 module.exports = api;
