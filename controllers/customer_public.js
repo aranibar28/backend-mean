@@ -158,7 +158,7 @@ const read_orders_customer = async (req, res = response) => {
 const read_orders_by_id = async (req, res = response) => {
   var id = req.params["id"];
   try {
-    let sale = await Sale.findById({ _id: id }).populate("address");
+    let sale = await Sale.findById({ _id: id }).populate("address").populate("customer");
     let details = await DetailSale.find({ sale: id }).populate("product");
     res.status(200).send({ data: sale, details: details });
   } catch (error) {
